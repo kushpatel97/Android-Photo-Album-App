@@ -14,6 +14,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.User;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -21,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
     public FloatingActionButton fab;
     public ArrayList<String> albumnames;
     public ArrayAdapter adapter;
+
+    public User user = new User();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,10 +36,6 @@ public class MainActivity extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
 
         albumnames = new ArrayList<String>();
-        for(int i = 0; i<10; i++){
-            albumnames.add("Test: " + i);
-        }
-
         adapter = new ArrayAdapter(this, R.layout.album_name_text, albumnames);
         listview.setAdapter(adapter);
 
@@ -47,13 +48,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String input = etInput.getText().toString().trim();
-                albumnames.add(input);
-                adapter.notifyDataSetChanged();
+                addAlbum(v,input);
+                etInput.setText("");
             }
         });
 
-//        listview.setAdapter(adapter);
+    }
 
+
+
+    public void addAlbum(View view, String name){
+        user.addAlbum(name);
+        albumnames.add(name);
+        adapter.notifyDataSetChanged();
 
     }
 }
