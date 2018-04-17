@@ -12,8 +12,6 @@ import java.util.ArrayList;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final String storeDir = "dat";
-    public static final String storeFile = "data.dat";
 
 
     /**
@@ -74,15 +72,14 @@ public class User implements Serializable {
     public int getNumberOfAlbums() {
         return numberOfAlbums;
     }
-
     public static void save(User pdApp) throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(storeDir + File.separator + storeFile));
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/data/data/rutgers.cs213androidproject/files/data.dat"));
         oos.writeObject(pdApp);
         oos.close();
     }
 
     public static User load() throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(storeDir + File.separator + storeFile));
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("/data/data/rutgers.cs213androidproject/files/data.dat"));
         User userList = (User) ois.readObject();
         ois.close();
         return userList;

@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,29 +25,47 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public EditText etInput;
     public FloatingActionButton fab;
-    public ArrayList<String> albumnames;
+    public ArrayList<String> albumnames = new ArrayList<String>();
     public ArrayAdapter adapter;
     public ListView listview;
+    public File filename = new File("/data/data/rutgers.cs213androidproject/files/data.dat");
 
     public User user = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        try {
+            user = User.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        if(!filename.exists()){
+            Context context = this;
+            File file = new File(context.getFilesDir(), "data.dat");
+            try {
+                file.createNewFile();
+            }
+            catch (IOException e){
+
+            }
+        }
+        update();
         listview = (ListView) findViewById(R.id.listview);
-//        etInput = (EditText) findViewById(R.id.input);
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
 
-        albumnames = new ArrayList<String>();
+
         adapter = new ArrayAdapter(this, R.layout.album_name_text, albumnames);
         listview.setAdapter(adapter);
 
 
-
-
-//        String input = etInput.getText().toString().trim();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         try {
-            User.load();
+            user = User.load();
             adapter.notifyDataSetChanged();
             listview.setAdapter(adapter);
         } catch (IOException e) {
@@ -89,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         try {
-            User.load();
+            user = User.load();
             adapter.notifyDataSetChanged();
             listview.setAdapter(adapter);
         } catch (IOException e) {
@@ -100,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addAlbum(View view){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Enter the name of the album: ");
 
         final EditText input = new EditText(this);
@@ -133,6 +152,11 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                try {
+                    User.save(user);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 user.addAlbum(albumname);
                 albumnames.add(albumname);
@@ -144,5 +168,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+    public void update(){
+        albumnames.clear();
+        for(int i=0; i <user.getAlbums().size(); i++){
+            albumnames.add(user.getAlbums().get(i).getAlbumName());
+        }
     }
 }
