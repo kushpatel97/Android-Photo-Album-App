@@ -37,8 +37,8 @@ public class User implements Serializable {
     }
 
 
-    public void addAlbum(String name){
-        albums.add(new Album(name));
+    public void addAlbum(Album name){
+        albums.add(name);
         numberOfAlbums++;
     }
 

@@ -7,30 +7,42 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.Layout;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Album;
+import model.CustomSpinner;
 import model.User;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    public EditText etInput;
+    public final Context pub_context = this;
+
     public FloatingActionButton fab;
+
     public ArrayList<String> albumnames = new ArrayList<String>();
     public ArrayAdapter adapter;
     public ListView listview;
+    public CustomSpinner spinner;
+
     public File filename = new File("/data/data/rutgers.cs213androidproject/files/data.dat");
 
     public User user = new User();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -58,15 +69,25 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         update();
+
+        // Link XML values to controller
         listview = (ListView) findViewById(R.id.listview);
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
 
+        //Spinner Stuff
+        spinner = (CustomSpinner) findViewById(R.id.spinner);
+        final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,R.array.album_functions,android.R.layout.simple_spinner_dropdown_item);
 
+
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setVisibility(View.INVISIBLE);
+
+        //Listview Stuff
         adapter = new ArrayAdapter(this, R.layout.album_name_text, albumnames);
         listview.setAdapter(adapter);
 
-
-
+        //Button functions
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +96,91 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int pos, long id) {
+                Toast.makeText(getApplicationContext(),"long clicked, "+"pos: " + pos, Toast.LENGTH_SHORT).show();
+                spinner.performClick();
+
+
+                spinner.setOnItemSelectedEvenIfUnchangedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                        if (i == 0) {
+                            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                            alert.setTitle("Rename");
+                            alert.setMessage("Rename me");
+
+                            final EditText input = new EditText(MainActivity.this);
+                            alert.setView(input);
+
+
+                            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String renamed = input.getText().toString();
+                                    if(user.albumExists(renamed)){
+                                        Context context = getApplicationContext();
+                                        CharSequence text = "Album already exists. Try another name.";
+                                        int duration = Toast.LENGTH_SHORT;
+                                        Toast.makeText(context, text, duration).show();
+                                        return;
+                                    }
+                                    if(renamed.isEmpty()){
+                                        Context context = getApplicationContext();
+                                        CharSequence text = "Field cannot be blank";
+                                        int duration = Toast.LENGTH_SHORT;
+                                        Toast.makeText(context, text, duration).show();
+                                        return;
+                                    }
+                                    user.getAlbums().get(pos).setAlbumName(renamed);
+
+                                    try {
+                                        User.save(user);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    update();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+
+
+                            alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    dialog.cancel();
+                                }
+                            });
+                            AlertDialog alertDialog = alert.create();
+                            alertDialog.show();
+                        }
+                        else if (i == 1){
+                            user.deleteAlbum(pos);
+                            try {
+                                User.save(user);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            update();
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(getApplicationContext(), "Album Deleted", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+                return false;
+            }
+        });
+
     }
+
+
 
     @Override
     public void onPause(){
@@ -158,8 +263,15 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                user.addAlbum(albumname);
-                albumnames.add(albumname);
+                Album album = new Album(albumname);
+                user.addAlbum(album);
+
+                try {
+                    User.save(user);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                update();
                 adapter.notifyDataSetChanged();
 //                etInput.setText("");
             }
@@ -175,5 +287,6 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0; i <user.getAlbums().size(); i++){
             albumnames.add(user.getAlbums().get(i).getAlbumName());
         }
+//        adapter.notifyDataSetChanged();
     }
 }
