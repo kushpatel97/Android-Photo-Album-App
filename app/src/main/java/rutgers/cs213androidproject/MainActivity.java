@@ -2,6 +2,7 @@ package rutgers.cs213androidproject;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,8 @@ import android.text.InputType;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
     public ArrayAdapter adapter;
     public ListView listview;
     public CustomSpinner spinner;
-
     public File filename = new File("/data/data/rutgers.cs213androidproject/files/data.dat");
 
-    public User user = new User();
+    public static User user = new User();
+
 
 
     @Override
@@ -96,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        //============= On item long press
         listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int pos, long id) {
@@ -174,13 +179,43 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                return false;
+                return true;
+            }
+        });
+
+        //When Clicked should redirect you to another activity with that albums photos
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Album currentAlbum = user.getAlbums().get(i);
+                user.setCurrentAlbum(currentAlbum);
+                Intent goToCurrentAlbum = new Intent(MainActivity.this, AlbumActivity.class);
+                startActivity(goToCurrentAlbum);
+                Toast.makeText(getApplicationContext(), adapterView.getItemAtPosition(i) + " Page", Toast.LENGTH_SHORT).show();
+
             }
         });
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.search_icon) {
+            Intent goToSearch = new Intent(MainActivity.this, SearchActivity.class);
+            startActivity(goToSearch);
+            Toast.makeText(getApplicationContext(), "Onto Search", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onPause(){

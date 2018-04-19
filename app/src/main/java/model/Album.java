@@ -25,20 +25,24 @@ public class Album implements Serializable {
     /**
      * Number of photos in an album
      */
-    public int numeberOfPhotos;
+    public int numberOfPhotos;
 
     public Album(String albumName){
         this.albumName = albumName;
         photos = new ArrayList<Photo>();
     }
 
-    public void addPhoto(){
-
+    public void addPhoto(String filepath){
+        Photo photo = new Photo(filepath);
+        photos.add(photo);
+        numberOfPhotos++;
     }
 
-    public void deletePhoto(){
-
+    public void deletePhoto(int index){
+        photos.remove(index);
+        numberOfPhotos--;
     }
+
 
     public String getAlbumName() {
         return albumName;
@@ -60,8 +64,8 @@ public class Album implements Serializable {
         this.currentPhoto = currentPhoto;
     }
 
-    public int getNumeberOfPhotos() {
-        return numeberOfPhotos;
+    public int getNumberOfPhotos() {
+        return numberOfPhotos;
     }
 
 }
