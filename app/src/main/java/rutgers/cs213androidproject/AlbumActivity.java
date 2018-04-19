@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.GridView;
 
@@ -48,7 +49,7 @@ public class AlbumActivity extends AppCompatActivity {
 
 
         update();
-        
+
         // Add a photo
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,5 +93,11 @@ public class AlbumActivity extends AppCompatActivity {
         for(int i = 0; i < user.getCurrentAlbum().getPhotos().size(); i++){
             photoList.add(user.getCurrentAlbum().getPhotos().get(i));
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.album_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
