@@ -6,5 +6,6 @@
 
     <item
         android:id="@+id/morevert"
+        android:icon="@drawable/ic_more_vert_white_24px"
         app:showAsAction="collapseActionView"/>
 </menu>

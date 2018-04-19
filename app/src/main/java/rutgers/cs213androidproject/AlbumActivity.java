@@ -110,6 +110,8 @@ public class AlbumActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
+                Photo photo = MainActivity.session.getCurrentAlbum().getPhotos().get(index);
+                MainActivity.session.getCurrentAlbum().setCurrentPhoto(photo);
                 Intent viewFullImage = new Intent(AlbumActivity.this, SingleImageActivity.class);
                 viewFullImage.putExtra("index", index);
                 startActivity(viewFullImage);

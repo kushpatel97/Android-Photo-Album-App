@@ -78,4 +78,8 @@ public class Photo implements Serializable {
     public ArrayList<String> getLocationList() {
         return locationList;
     }
+
+    public ArrayList<Tag> getTaglist() {
+        return taglist;
+    }
 }
