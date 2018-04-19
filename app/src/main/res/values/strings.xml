@@ -6,5 +6,8 @@
         <item>Delete Album</item>
     </string-array>
 
-    <string name="spinner_prompt">Select one:</string>
+    <string-array name="photo_functions">
+        <item>Delete Photo</item>
+        <item>Move Photo</item>
+    </string-array>
 </resources>
