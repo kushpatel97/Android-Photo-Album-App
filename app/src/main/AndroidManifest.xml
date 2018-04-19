@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchActivity" />
-        <activity android:name=".AlbumActivity"></activity>
+        <activity android:name=".AlbumActivity" />
+        <activity android:name=".SingleImageActivity"></activity>
     </application>
 
 </manifest>

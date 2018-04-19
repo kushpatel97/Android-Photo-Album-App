@@ -104,6 +104,17 @@ public class AlbumActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+
+        //ON CLICK GOES TO FULL IMAGE
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
+                Intent viewFullImage = new Intent(AlbumActivity.this, SingleImageActivity.class);
+                viewFullImage.putExtra("index", index);
+                startActivity(viewFullImage);
+            }
+        });
     }
 
     @Override
