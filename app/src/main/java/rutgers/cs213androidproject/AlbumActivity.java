@@ -36,7 +36,6 @@ public class AlbumActivity extends AppCompatActivity {
     public GridView gridView;
     public CustomSpinner customSpinner;
     public AlbumImageAdapter albumImageAdapter;
-    public static User user = MainActivity.user;
 
 
 
@@ -84,9 +83,9 @@ public class AlbumActivity extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         if(i == 0){
-                            user.getCurrentAlbum().deletePhoto(pos);
+                            MainActivity.session.getCurrentAlbum().deletePhoto(pos);
                             try {
-                                User.save(user);
+                                User.save(MainActivity.session);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -117,14 +116,14 @@ public class AlbumActivity extends AppCompatActivity {
                 uri = data.getData();
             }
             String photopath = uri.toString();
-            user.getCurrentAlbum().addPhoto(photopath);
+            MainActivity.session.getCurrentAlbum().addPhoto(photopath);
 
             try {
-                User.save(user);
+                User.save(MainActivity.session);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            gridView = (GridView) findViewById(R.id.gridview_album);
             update();
             albumImageAdapter.notifyDataSetChanged();
             gridView.setAdapter(albumImageAdapter);
@@ -134,9 +133,10 @@ public class AlbumActivity extends AppCompatActivity {
 
     public void update(){
         photoList.clear();
-        for(int i = 0; i < user.getCurrentAlbum().getPhotos().size(); i++){
-            photoList.add(user.getCurrentAlbum().getPhotos().get(i));
-        }
+        photoList.addAll(MainActivity.session.getCurrentAlbum().getPhotos());
+//        for(int i = 0; i < MainActivity.session.getCurrentAlbum().getPhotos().size(); i++){
+//            photoList.add(MainActivity.session.getCurrentAlbum().getPhotos().get(i));
+//        }
     }
 
     @Override

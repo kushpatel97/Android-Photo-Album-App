@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public CustomSpinner spinner;
     public File filename = new File("/data/data/rutgers.cs213androidproject/files/data.dat");
 
-    public static User user = new User();
+    public static User session = new User();
 
 
 
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         try {
-            user = User.load();
+            session = User.load();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                             alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     String renamed = input.getText().toString();
-                                    if(user.albumExists(renamed)){
+                                    if(session.albumExists(renamed)){
                                         Context context = getApplicationContext();
                                         CharSequence text = "Album already exists. Try another name.";
                                         int duration = Toast.LENGTH_SHORT;
@@ -138,10 +138,10 @@ public class MainActivity extends AppCompatActivity {
                                         Toast.makeText(context, text, duration).show();
                                         return;
                                     }
-                                    user.getAlbums().get(pos).setAlbumName(renamed);
+                                    session.getAlbums().get(pos).setAlbumName(renamed);
 
                                     try {
-                                        User.save(user);
+                                        User.save(session);
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
@@ -160,9 +160,9 @@ public class MainActivity extends AppCompatActivity {
                             alertDialog.show();
                         }
                         else if (i == 1){
-                            user.deleteAlbum(pos);
+                            session.deleteAlbum(pos);
                             try {
-                                User.save(user);
+                                User.save(session);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -188,8 +188,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                Album currentAlbum = user.getAlbums().get(i);
-                user.setCurrentAlbum(currentAlbum);
+                Album currentAlbum = session.getAlbums().get(i);
+                session.setCurrentAlbum(currentAlbum);
                 Intent goToCurrentAlbum = new Intent(MainActivity.this, AlbumActivity.class);
                 startActivity(goToCurrentAlbum);
                 Toast.makeText(getApplicationContext(), adapterView.getItemAtPosition(i) + " Page", Toast.LENGTH_SHORT).show();
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         try {
-            User.save(user);
+            User.save(session);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         try {
-            user = User.load();
+            session = User.load();
             adapter.notifyDataSetChanged();
             listview.setAdapter(adapter);
         } catch (IOException e) {
@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         try {
-            user = User.load();
+            session = User.load();
             adapter.notifyDataSetChanged();
             listview.setAdapter(adapter);
         } catch (IOException e) {
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(user.albumExists(albumname)){
+                if(session.albumExists(albumname)){
                     Context context = getApplicationContext();
                     CharSequence text = "Album already exists!";
                     int duration = Toast.LENGTH_SHORT;
@@ -293,16 +293,16 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 try {
-                    User.save(user);
+                    User.save(session);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
                 Album album = new Album(albumname);
-                user.addAlbum(album);
+                session.addAlbum(album);
 
                 try {
-                    User.save(user);
+                    User.save(session);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -319,8 +319,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void update(){
         albumnames.clear();
-        for(int i=0; i <user.getAlbums().size(); i++){
-            albumnames.add(user.getAlbums().get(i).getAlbumName());
+        for(int i=0; i <session.getAlbums().size(); i++){
+            albumnames.add(session.getAlbums().get(i).getAlbumName());
         }
 //        adapter.notifyDataSetChanged();
     }
