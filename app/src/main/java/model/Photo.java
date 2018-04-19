@@ -43,6 +43,10 @@ public class Photo implements Serializable {
         taglist.add(new Tag(name, value));
     }
 
+    public void removeTag(int index){
+        taglist.remove(index);
+    }
+
     public void removeTag(String name, String value){
         for(int i = 0; i < taglist.size(); i++) {
             Tag cur = taglist.get(i);

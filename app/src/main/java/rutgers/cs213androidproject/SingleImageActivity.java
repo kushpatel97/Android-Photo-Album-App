@@ -31,8 +31,10 @@ public class SingleImageActivity extends AppCompatActivity {
     public FloatingActionButton floatingActionButton;
     public ListView listView;
     public CustomSpinner customSpinner;
+    public CustomSpinner deleteSpinner;
 
     public String[] tagOptions = {"Person", "Location"};
+    public String[] tagDelete = {"Delete Tag"};
 
     public ArrayList<String> taglist = new ArrayList<>();
     public ArrayAdapter<String> tagAdapter;
@@ -52,15 +54,25 @@ public class SingleImageActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.singleImageView);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton_tag);
         listView = (ListView) findViewById(R.id.taglistview);
+
         customSpinner = (CustomSpinner) findViewById(R.id.spinner_tag);
         final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(SingleImageActivity.this, android.R.layout.simple_spinner_dropdown_item, tagOptions);
-
-        tagAdapter = new ArrayAdapter<>(this, R.layout.album_name_text, taglist);
-        listView.setAdapter(tagAdapter);
 
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         customSpinner.setAdapter(spinnerAdapter);
         customSpinner.setVisibility(View.INVISIBLE);
+
+        deleteSpinner = (CustomSpinner) findViewById(R.id.spinner_tag_options);
+        final ArrayAdapter<String> deleteAdapter = new ArrayAdapter<String>(SingleImageActivity.this, android.R.layout.simple_spinner_dropdown_item, tagDelete);
+
+        deleteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        deleteSpinner.setAdapter(deleteAdapter);
+        deleteSpinner.setVisibility(View.INVISIBLE);
+
+
+        tagAdapter = new ArrayAdapter<>(this, R.layout.album_name_text, taglist);
+        listView.setAdapter(tagAdapter);
+
         openImage();
 
 
@@ -69,7 +81,6 @@ public class SingleImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 customSpinner.performClick();
-                Toast.makeText(SingleImageActivity.this, tagOptions[0] + "afdasdfas", Toast.LENGTH_SHORT);
                 customSpinner.setOnItemSelectedEvenIfUnchangedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -194,8 +205,30 @@ public class SingleImageActivity extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                deleteSpinner.performClick();
+                deleteSpinner.setOnItemSelectedEvenIfUnchangedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        if(i == 0){
+                            ArrayList<Tag> tagArrayList = MainActivity.session.getCurrentAlbum().getCurrentPhoto().getTaglist();
+                            MainActivity.session.getCurrentAlbum().getCurrentPhoto().removeTag(tagArrayList.get(i).key, tagArrayList.get(i).value);
+                            try {
+                                User.save(MainActivity.session);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            update();
+                            tagAdapter.notifyDataSetChanged();
+                        }
+                    }
 
-                System.out.println(adapterView.getSelectedItemPosition());
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+
                 return true;
             }
         });
