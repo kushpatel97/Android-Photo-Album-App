@@ -119,8 +119,7 @@ public class MainActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         final int pos = (int) info.id;
         switch (item.getItemId()){
-            case R.id.deleteAlbum:
-                Toast.makeText(this, "Delete Selected", Toast.LENGTH_SHORT).show();
+            case R.id.renameAlbum:
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                 alert.setTitle("Rename");
                 alert.setMessage("Rename me");
@@ -167,8 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog alertDialog = alert.create();
                 alertDialog.show();
                 return true;
-            case R.id.renameAlbum:
-                Toast.makeText(this, "Rename Selected", Toast.LENGTH_SHORT).show();
+            case R.id.deleteAlbum:
                 session.deleteAlbum(pos);
                 try {
                     User.save(session);

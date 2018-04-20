@@ -125,8 +125,11 @@ public class AlbumActivity extends AppCompatActivity {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        gridView = (GridView) findViewById(R.id.gridview_album);
                         update();
                         albumImageAdapter.notifyDataSetChanged();
+                        gridView.invalidateViews();
+                        gridView.setAdapter(albumImageAdapter);
 
                         return true;
                     }
