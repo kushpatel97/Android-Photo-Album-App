@@ -8,20 +8,20 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import model.CustomSpinner;
 import model.Tag;
 import model.User;
 
@@ -30,11 +30,6 @@ public class SingleImageActivity extends AppCompatActivity {
     public ImageView imageView;
     public FloatingActionButton floatingActionButton;
     public ListView listView;
-    public CustomSpinner customSpinner;
-    public CustomSpinner deleteSpinner;
-
-    public String[] tagOptions = {"Person", "Location"};
-    public String[] tagDelete = {"Delete Tag"};
 
     public ArrayList<String> taglist = new ArrayList<>();
     public ArrayAdapter<String> tagAdapter;
@@ -55,23 +50,9 @@ public class SingleImageActivity extends AppCompatActivity {
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton_tag);
         listView = (ListView) findViewById(R.id.taglistview);
 
-        customSpinner = (CustomSpinner) findViewById(R.id.spinner_tag);
-        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(SingleImageActivity.this, android.R.layout.simple_spinner_dropdown_item, tagOptions);
-
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        customSpinner.setAdapter(spinnerAdapter);
-        customSpinner.setVisibility(View.INVISIBLE);
-
-        deleteSpinner = (CustomSpinner) findViewById(R.id.spinner_tag_options);
-        final ArrayAdapter<String> deleteAdapter = new ArrayAdapter<String>(SingleImageActivity.this, android.R.layout.simple_spinner_dropdown_item, tagDelete);
-
-        deleteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        deleteSpinner.setAdapter(deleteAdapter);
-        deleteSpinner.setVisibility(View.INVISIBLE);
-
-
         tagAdapter = new ArrayAdapter<>(this, R.layout.album_name_text, taglist);
         listView.setAdapter(tagAdapter);
+        registerForContextMenu(listView);
 
         openImage();
 
@@ -80,15 +61,15 @@ public class SingleImageActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                customSpinner.performClick();
-                customSpinner.setOnItemSelectedEvenIfUnchangedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        // IF PERSON TAG IS SELECTED
-                        if(i == 0){
-//                            Toast.makeText(getApplicationContext(), "afdasdfas", Toast.LENGTH_SHORT);
-                            System.out.println(customSpinner.getSelectedItem().toString());
 
+            final PopupMenu popupMenu = new PopupMenu(SingleImageActivity.this, floatingActionButton);
+            popupMenu.getMenuInflater().inflate(R.menu.tagkeys, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    switch (menuItem.getItemId()){
+                        case R.id.personKey:
                             AlertDialog.Builder alert = new AlertDialog.Builder(SingleImageActivity.this);
                             alert.setTitle("Person Tag");
                             alert.setMessage("Please Enter a value for this tag");
@@ -99,23 +80,22 @@ public class SingleImageActivity extends AppCompatActivity {
 
                             alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    String renamed = input.getText().toString();
-//                                    if(session.albumExists(renamed)){
-//                                        Context context = getApplicationContext();
-//                                        CharSequence text = "Album already exists. Try another name.";
-//                                        int duration = Toast.LENGTH_SHORT;
-//                                        Toast.makeText(context, text, duration).show();
-//                                        return;
-//                                    }
-                                    if(renamed.isEmpty()){
+                                    String value = input.getText().toString();
+                                    if(MainActivity.session.getCurrentAlbum().getCurrentPhoto().tagExists("Person", value)){
+                                        Context context = getApplicationContext();
+                                        CharSequence text = "Tag already exists. Try another tag.";
+                                        int duration = Toast.LENGTH_SHORT;
+                                        Toast.makeText(context, text, duration).show();
+                                        return;
+                                    }
+                                    if(value.isEmpty()){
                                         Context context = getApplicationContext();
                                         CharSequence text = "Field cannot be blank";
                                         int duration = Toast.LENGTH_SHORT;
                                         Toast.makeText(context, text, duration).show();
                                         return;
                                     }
-//                                    Tag tag = new Tag(customSpinner.getSelectedItem().toString(), renamed);
-                                    MainActivity.session.getCurrentAlbum().getCurrentPhoto().addTag(customSpinner.getSelectedItem().toString(),renamed);
+                                    MainActivity.session.getCurrentAlbum().getCurrentPhoto().addTag("Person",value);
 
                                     try {
                                         User.save(MainActivity.session);
@@ -135,31 +115,27 @@ public class SingleImageActivity extends AppCompatActivity {
                             });
                             AlertDialog alertDialog = alert.create();
                             alertDialog.show();
-                        }
-                        // IF LOCATION TAG IS SELECTED
-                        else if (i == 1){
-//                            Toast.makeText(getApplicationContext(), "afdasdfas", Toast.LENGTH_SHORT);
-                            System.out.println(customSpinner.getSelectedItem().toString());
+                            return true;
+                        case R.id.locationKey:
+                            AlertDialog.Builder locationAlert = new AlertDialog.Builder(SingleImageActivity.this);
+                            locationAlert.setTitle("Location Tag");
+                            locationAlert.setMessage("Please Enter a value for this tag");
 
-                            AlertDialog.Builder alert = new AlertDialog.Builder(SingleImageActivity.this);
-                            alert.setTitle("Location Tag");
-                            alert.setMessage("Please Enter a value for this tag");
-
-                            final EditText input = new EditText(SingleImageActivity.this);
-                            alert.setView(input);
+                            final EditText locationInput = new EditText(SingleImageActivity.this);
+                            locationAlert.setView(locationInput);
 
 
-                            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            locationAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    String renamed = input.getText().toString();
-//                                    if(session.albumExists(renamed)){
-//                                        Context context = getApplicationContext();
-//                                        CharSequence text = "Album already exists. Try another name.";
-//                                        int duration = Toast.LENGTH_SHORT;
-//                                        Toast.makeText(context, text, duration).show();
-//                                        return;
-//                                    }
-                                    if(renamed.isEmpty()){
+                                    String value = locationInput.getText().toString();
+                                    if(MainActivity.session.getCurrentAlbum().getCurrentPhoto().tagExists("Location", value)){
+                                        Context context = getApplicationContext();
+                                        CharSequence text = "Tag already exists. Try another tag.";
+                                        int duration = Toast.LENGTH_SHORT;
+                                        Toast.makeText(context, text, duration).show();
+                                        return;
+                                    }
+                                    if(value.isEmpty()){
                                         Context context = getApplicationContext();
                                         CharSequence text = "Field cannot be blank";
                                         int duration = Toast.LENGTH_SHORT;
@@ -167,7 +143,7 @@ public class SingleImageActivity extends AppCompatActivity {
                                         return;
                                     }
 //                                    Tag tag = new Tag(customSpinner.getSelectedItem().toString(), renamed);
-                                    MainActivity.session.getCurrentAlbum().getCurrentPhoto().addTag(customSpinner.getSelectedItem().toString(),renamed);
+                                    MainActivity.session.getCurrentAlbum().getCurrentPhoto().addTag("Location",value);
 
                                     try {
                                         User.save(MainActivity.session);
@@ -180,67 +156,62 @@ public class SingleImageActivity extends AppCompatActivity {
                             });
 
 
-                            alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            locationAlert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     dialog.cancel();
                                 }
                             });
-                            AlertDialog alertDialog = alert.create();
-                            alertDialog.show();
-
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
+                            AlertDialog locationDialog = locationAlert.create();
+                            locationDialog.show();
+                            return true;
 
                     }
-                });
+                    return true;
+                }
+            });
 
+            popupMenu.show();
 
 
             }
         });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                deleteSpinner.performClick();
-                deleteSpinner.setOnItemSelectedEvenIfUnchangedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        if(i == 0){
-                            ArrayList<Tag> tagArrayList = MainActivity.session.getCurrentAlbum().getCurrentPhoto().getTaglist();
-                            MainActivity.session.getCurrentAlbum().getCurrentPhoto().removeTag(tagArrayList.get(i).key, tagArrayList.get(i).value);
-                            try {
-                                User.save(MainActivity.session);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            update();
-                            tagAdapter.notifyDataSetChanged();
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
-
-                return true;
-            }
-        });
-
-
-
 
 
 
     }
 
-    private void openImage() {
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.tagoptions, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final int pos = (int) info.id;
+        switch (item.getItemId()){
+            case R.id.deleteTag:
+                ArrayList<Tag> tagArrayList = MainActivity.session.getCurrentAlbum().getCurrentPhoto().getTaglist();
+                MainActivity.session.getCurrentAlbum().getCurrentPhoto().removeTag(tagArrayList.get(pos).key, tagArrayList.get(pos).value);
+                try {
+                    User.save(MainActivity.session);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                update();
+                tagAdapter.notifyDataSetChanged();
+
+                return true;
+            case R.id.movePhoto:
+
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    public void openImage() {
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -254,7 +225,7 @@ public class SingleImageActivity extends AppCompatActivity {
         }
     }
 
-    private void update(){
+    public void update(){
         taglist.clear();
         for(int i = 0; i < MainActivity.session.getCurrentAlbum().getCurrentPhoto().getTaglist().size(); i++){
             taglist.add(MainActivity.session.getCurrentAlbum().getCurrentPhoto().getTaglist().get(i).key + " | " + MainActivity.session.getCurrentAlbum().getCurrentPhoto().getTaglist().get(i).value);

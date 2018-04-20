@@ -38,6 +38,11 @@ public class Album implements Serializable {
         numberOfPhotos++;
     }
 
+    public void addPhoto(Photo photo){
+        photos.add(photo);
+        numberOfPhotos++;
+    }
+
     public void deletePhoto(int index){
         photos.remove(index);
         numberOfPhotos--;

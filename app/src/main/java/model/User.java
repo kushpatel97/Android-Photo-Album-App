@@ -72,6 +72,7 @@ public class User implements Serializable {
     public int getNumberOfAlbums() {
         return numberOfAlbums;
     }
+
     public static void save(User pdApp) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/data/data/rutgers.cs213androidproject/files/data.dat"));
         oos.writeObject(pdApp);

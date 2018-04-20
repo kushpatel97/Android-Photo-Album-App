@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">CS213 Android Project</string>
 
-    <string-array name="album_functions">
-        <item>Rename Album</item>
-        <item>Delete Album</item>
-    </string-array>
 
     <string-array name="photo_functions">
         <item>Delete Photo</item>

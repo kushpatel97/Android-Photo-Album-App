@@ -5,21 +5,20 @@ import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import model.Album;
 import model.AlbumImageAdapter;
-import model.CustomSpinner;
 import model.Photo;
-import model.Tag;
 import model.User;
 
 public class AlbumActivity extends AppCompatActivity {
@@ -34,7 +33,6 @@ public class AlbumActivity extends AppCompatActivity {
     public ArrayList<Photo> photoList = new ArrayList<>();
     public FloatingActionButton fab;
     public GridView gridView;
-    public CustomSpinner customSpinner;
     public AlbumImageAdapter albumImageAdapter;
 
 
@@ -50,13 +48,7 @@ public class AlbumActivity extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton_album);
         albumImageAdapter = new AlbumImageAdapter(AlbumActivity.this, photoList);
         gridView.setAdapter(albumImageAdapter);
-
-        customSpinner = (CustomSpinner) findViewById(R.id.spinner_album);
-        final ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,R.array.photo_functions,android.R.layout.simple_spinner_dropdown_item);
-
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        customSpinner.setAdapter(spinnerAdapter);
-        customSpinner.setVisibility(View.INVISIBLE);
+        registerForContextMenu(gridView);
 
         update();
 
@@ -73,40 +65,6 @@ public class AlbumActivity extends AppCompatActivity {
         });
 
 
-        //ON LONG PRESS SHOW OPTIONS
-        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int pos, long l) {
-                customSpinner.performClick();
-
-                customSpinner.setOnItemSelectedEvenIfUnchangedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        if(i == 0){
-                            MainActivity.session.getCurrentAlbum().deletePhoto(pos);
-                            try {
-                                User.save(MainActivity.session);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            update();
-                            albumImageAdapter.notifyDataSetChanged();
-                            Toast.makeText(getApplicationContext(), "Photo Deleted", Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-                return true;
-            }
-        });
-
-
-        //ON CLICK GOES TO FULL IMAGE
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
@@ -118,6 +76,69 @@ public class AlbumActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.photooptions, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(final MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final int pos = (int) info.id;
+        switch (item.getItemId()){
+            case R.id.deletePhoto:
+                MainActivity.session.getCurrentAlbum().deletePhoto(pos);
+                try {
+                    User.save(MainActivity.session);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                update();
+                albumImageAdapter.notifyDataSetChanged();
+                Toast.makeText(getApplicationContext(), "Photo Deleted", Toast.LENGTH_SHORT).show();
+
+                return true;
+            case R.id.movePhoto:
+                final PopupMenu popupMenu = new PopupMenu(AlbumActivity.this, gridView);
+//                popupMenu.getMenuInflater().inflate(R.menu.tagkeys, popupMenu.getMenu());
+                for(int i = 0; i < MainActivity.session.getAlbums().size(); i++){
+                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE,MainActivity.session.getAlbums().get(i).albumName);
+                }
+
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+//                        Toast.makeText(AlbumActivity.this, menuItem.getItemId(), Toast.LENGTH_SHORT);
+                        //Gets index of new album
+                        System.out.println(menuItem.getItemId());
+
+
+                        Photo photo = MainActivity.session.getCurrentAlbum().getPhotos().get(pos);
+                        MainActivity.session.getAlbums().get(menuItem.getItemId()).addPhoto(photo);
+                        MainActivity.session.getCurrentAlbum().deletePhoto(pos);
+
+                        try {
+                            User.save(MainActivity.session);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        update();
+                        albumImageAdapter.notifyDataSetChanged();
+
+                        return true;
+                    }
+                });
+                popupMenu.show();
+
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -156,5 +177,17 @@ public class AlbumActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.album_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.slideshow) {
+            Intent goToSlideshow = new Intent(AlbumActivity.this, SlideshowActivity.class);
+            startActivity(goToSlideshow);
+            Toast.makeText(getApplicationContext(), "Going to Slideshow", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

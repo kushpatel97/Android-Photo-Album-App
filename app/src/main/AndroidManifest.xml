@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".SearchActivity" />
         <activity android:name=".AlbumActivity" />
-        <activity android:name=".SingleImageActivity"></activity>
+        <activity android:name=".SingleImageActivity" />
+        <activity android:name=".SlideshowActivity"></activity>
     </application>
 
 </manifest>

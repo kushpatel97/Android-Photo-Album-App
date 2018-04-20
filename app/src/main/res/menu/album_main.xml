@@ -5,7 +5,8 @@
     tools:context=".AlbumActivity">
 
     <item
-        android:id="@+id/morevert"
-        android:icon="@drawable/ic_more_vert_white_24px"
-        app:showAsAction="collapseActionView"/>
+        android:id="@+id/slideshow"
+        android:title="slideshow"
+        android:icon="@drawable/ic_slideshow_white_24px"
+        app:showAsAction="always"/>
 </menu>
