@@ -3,6 +3,7 @@ package rutgers.cs213androidproject;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -35,9 +36,10 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
-        search = (ImageButton) findViewById(R.id.search);
+        search = (ImageButton) findViewById(R.id.searchTags);
         editText = (EditText) findViewById(R.id.tagName);
         customSpinner = (CustomSpinner) findViewById(R.id.tagspinner);
         gridView = (GridView) findViewById(R.id.gridview_search);
@@ -45,7 +47,7 @@ public class SearchActivity extends AppCompatActivity {
         albumImageAdapter = new AlbumImageAdapter(SearchActivity.this, photoList);
         gridView.setAdapter(albumImageAdapter);
 
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(SearchActivity.this, R.array.tag_functions, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, spinneroptions);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         customSpinner.setAdapter(spinnerAdapter);
 
@@ -73,7 +75,7 @@ public class SearchActivity extends AppCompatActivity {
                 String tagkey = spinneroptions[option];
                 String tagvalue = editText.getText().toString();
                 tagArrayList.add(new Tag(tagkey, tagvalue));
-                photoList = MainActivity.session.searchTags(tagArrayList);
+                photoList.addAll(MainActivity.session.searchTags(tagArrayList));
 
                 gridView = (GridView) findViewById(R.id.gridview_search);
                 albumImageAdapter.notifyDataSetChanged();
