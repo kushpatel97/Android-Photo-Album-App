@@ -37,6 +37,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
 
         search = (ImageButton) findViewById(R.id.searchTags);
@@ -72,6 +73,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 tagArrayList.clear();
+                photoList.clear();
                 String tagkey = spinneroptions[option];
                 String tagvalue = editText.getText().toString();
                 tagArrayList.add(new Tag(tagkey, tagvalue));
