@@ -76,8 +76,10 @@ public class SearchActivity extends AppCompatActivity {
                 photoList.clear();
                 String tagkey = spinneroptions[option];
                 String tagvalue = editText.getText().toString();
-                tagArrayList.add(new Tag(tagkey, tagvalue));
-                photoList.addAll(MainActivity.session.searchTags(tagArrayList));
+                Tag tag = new Tag(tagkey, tagvalue);
+
+                tagArrayList.add(tag);
+                photoList.addAll(MainActivity.session.searchTags(tag.value));
 
                 gridView = (GridView) findViewById(R.id.gridview_search);
                 albumImageAdapter.notifyDataSetChanged();

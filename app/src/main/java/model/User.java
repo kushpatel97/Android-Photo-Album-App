@@ -65,14 +65,61 @@ public class User implements Serializable {
             for(Album album : albums) {
                 for(Photo photo : album.getPhotos()) {
                     if(photo.tagExists(tag.key, tag.value)) {
-                        if(photo.containsTagValue(tag.value.toLowerCase())) {
-                            check.add(photo);
+                        for (Tag tags : photo.getTaglist()){
+                            if(tags.value.toLowerCase().indexOf(tag.value.toLowerCase()) != -1){
+                                check.add(photo);
+                            }
                         }
+
                     }
                 }
 
             }
         }
+        photolist.addAll(check);
+        return photolist;
+    }
+
+    public ArrayList<Photo> searchTags(Tag searchtag){
+        ArrayList<Photo> photolist = new ArrayList<Photo>();
+        //Used to make sure no duplicates
+        HashSet<Photo> check = new HashSet<Photo>();
+            for(Album album : albums) {
+                for(Photo photo : album.getPhotos()) {
+                    if(photo.tagExists(searchtag.key, searchtag.value)) {
+                        for(Tag tag : photo.getTaglist()){
+                            if(tag.value.indexOf(searchtag.value) != -1) {
+                                check.add(photo);
+                            }
+                        }
+
+
+                    }
+                }
+
+            }
+
+        photolist.addAll(check);
+        return photolist;
+    }
+
+    public ArrayList<Photo> searchTags(String tagvalue){
+        ArrayList<Photo> photolist = new ArrayList<Photo>();
+        //Used to make sure no duplicates
+        HashSet<Photo> check = new HashSet<Photo>();
+        for(Album album : albums) {
+            for(Photo photo : album.getPhotos()) {
+                for (Tag tag : photo.getTaglist()){
+                    System.out.println(tagvalue);
+                    System.out.println(tag.value.toLowerCase().contains(tagvalue.toLowerCase()));
+                    if(tag.value.toLowerCase().contains(tagvalue.toLowerCase())){
+                        check.add(photo);
+                    }
+                }
+            }
+
+        }
+
         photolist.addAll(check);
         return photolist;
     }
