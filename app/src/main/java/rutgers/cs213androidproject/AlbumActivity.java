@@ -99,8 +99,11 @@ public class AlbumActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                gridView = (GridView) findViewById(R.id.gridview_album);
                 update();
                 albumImageAdapter.notifyDataSetChanged();
+                gridView.invalidateViews();
+                gridView.setAdapter(albumImageAdapter);
                 Toast.makeText(getApplicationContext(), "Photo Deleted", Toast.LENGTH_SHORT).show();
 
                 return true;

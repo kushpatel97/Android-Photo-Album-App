@@ -67,6 +67,21 @@ public class Photo implements Serializable {
 
     }
 
+    public boolean containsTagValue(String tagval)
+    {
+        if (taglist.isEmpty())
+            return false;
+
+        for (Tag tag : taglist)
+        {
+            // uses contains because we want full partial string matches from searches
+            if (tag.value.toLowerCase().contains(tagval.toLowerCase()))
+                return true;
+        }
+
+        return false;
+    }
+
     public String getFilepath() {
         return filepath;
     }

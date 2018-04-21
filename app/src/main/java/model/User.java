@@ -65,7 +65,9 @@ public class User implements Serializable {
             for(Album album : albums) {
                 for(Photo photo : album.getPhotos()) {
                     if(photo.tagExists(tag.key, tag.value)) {
-                        check.add(photo);
+                        if(photo.containsTagValue(tag.value.toLowerCase())) {
+                            check.add(photo);
+                        }
                     }
                 }
 
