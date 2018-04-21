@@ -72,13 +72,11 @@ public class SearchActivity extends AppCompatActivity {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tagArrayList.clear();
                 photoList.clear();
                 String tagkey = spinneroptions[option];
                 String tagvalue = editText.getText().toString();
                 Tag tag = new Tag(tagkey, tagvalue);
 
-                tagArrayList.add(tag);
                 photoList.addAll(MainActivity.session.searchTags(tag.value));
 
                 gridView = (GridView) findViewById(R.id.gridview_search);
