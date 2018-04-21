@@ -28,9 +28,9 @@ public class SlideshowActivity extends AppCompatActivity {
         next = (ImageButton) findViewById(R.id.next);
         imageView = (ImageView) findViewById(R.id.slideshowImage);
 
-        int start = 0;
+
         final int end = MainActivity.session.getCurrentAlbum().getPhotos().size();
-        int count = 0;
+
         currentindex = 0;
 
         openInitialImage();
@@ -45,7 +45,6 @@ public class SlideshowActivity extends AppCompatActivity {
                     currentindex = 0;
                 }
 
-                System.out.println("=======================" + currentindex + "=======================");
                 Photo photo = MainActivity.session.getCurrentAlbum().getPhotos().get(currentindex);
                 Uri uri = Uri.parse(photo.getFilepath());
                 imageView.setImageURI(uri);
@@ -59,7 +58,6 @@ public class SlideshowActivity extends AppCompatActivity {
                 if(currentindex == -1){
                     currentindex = end-1;
                 }
-                System.out.println("=======================" + currentindex + "=======================");
                 Photo photo = MainActivity.session.getCurrentAlbum().getPhotos().get(currentindex);
                 Uri uri = Uri.parse(photo.getFilepath());
                 imageView.setImageURI(uri);

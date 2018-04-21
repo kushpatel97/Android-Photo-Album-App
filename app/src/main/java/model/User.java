@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class User implements Serializable {
 
@@ -54,6 +55,24 @@ public class User implements Serializable {
             }
         }
         return false;
+    }
+
+    public ArrayList<Photo> searchTags(ArrayList<Tag> taggedlist){
+        ArrayList<Photo> photolist = new ArrayList<Photo>();
+        //Used to make sure no duplicates
+        HashSet<Photo> check = new HashSet<Photo>();
+        for(Tag tag : taggedlist) {
+            for(Album album : albums) {
+                for(Photo photo : album.getPhotos()) {
+                    if(photo.tagExists(tag.key, tag.value)) {
+                        check.add(photo);
+                    }
+                }
+
+            }
+        }
+        photolist.addAll(check);
+        return photolist;
     }
 
     public ArrayList<Album> getAlbums() {
