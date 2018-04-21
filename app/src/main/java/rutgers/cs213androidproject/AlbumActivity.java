@@ -34,6 +34,7 @@ public class AlbumActivity extends AppCompatActivity {
     public FloatingActionButton fab;
     public GridView gridView;
     public AlbumImageAdapter albumImageAdapter;
+    public int pos;
 
 
 
@@ -86,7 +87,10 @@ public class AlbumActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        final int pos = (int) info.id;
+//        final int pos = (int) info.id;
+        pos = info.position;
+        System.out.println("===============================================" + pos);
+
         switch (item.getItemId()){
             case R.id.deletePhoto:
                 MainActivity.session.getCurrentAlbum().deletePhoto(pos);

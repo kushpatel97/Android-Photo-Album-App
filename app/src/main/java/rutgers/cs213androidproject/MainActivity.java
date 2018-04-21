@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayAdapter adapter;
     public ListView listview;
     public File filename = new File("/data/data/rutgers.cs213androidproject/files/data.dat");
-
+    public int pos;
     public static User session = new User();
 
 
@@ -117,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        final int pos = (int) info.id;
+//        final int pos = (int) info.id;
+        pos = info.position;
+        System.out.println("======================" + pos);
         switch (item.getItemId()){
             case R.id.renameAlbum:
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
