@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -27,7 +28,7 @@ public class SearchActivity extends AppCompatActivity {
     public ArrayList<Photo> photoList = new ArrayList<>();
     public AlbumImageAdapter albumImageAdapter;
 
-    public String[] spinneroptions = {"Person", "Location"};
+    public String[] spinneroptions = {"Person", "Location", "Search All"};
     public int option;
     public ArrayList<Tag> tagArrayList = new ArrayList<>();
 
@@ -76,8 +77,17 @@ public class SearchActivity extends AppCompatActivity {
                 String tagkey = spinneroptions[option];
                 String tagvalue = editText.getText().toString();
                 Tag tag = new Tag(tagkey, tagvalue);
+                if(option == 0){
+                    photoList.addAll(MainActivity.session.searchCertainTags(tag.key, tag.value));
+                }
+                else if(option == 1){
+                    photoList.addAll(MainActivity.session.searchCertainTags(tag.key, tag.value));
+                }
+                else if(option == 2){
+                    photoList.addAll(MainActivity.session.searchAllTags(tag.value));
+                }
 
-                photoList.addAll(MainActivity.session.searchTags(tag.value));
+
 
                 gridView = (GridView) findViewById(R.id.gridview_search);
                 albumImageAdapter.notifyDataSetChanged();

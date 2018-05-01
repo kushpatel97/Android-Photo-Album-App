@@ -154,7 +154,7 @@ public class AlbumActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_CODE){
+        if(requestCode == REQUEST_CODE && data != null){
             Uri uri = null;
             if(data != null){
                 uri = data.getData();
@@ -171,6 +171,8 @@ public class AlbumActivity extends AppCompatActivity {
             update();
             albumImageAdapter.notifyDataSetChanged();
             gridView.setAdapter(albumImageAdapter);
+        }
+        else{
 
         }
     }

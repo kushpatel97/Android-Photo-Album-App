@@ -57,8 +57,8 @@ public class User implements Serializable {
         return false;
     }
 
-
-    public ArrayList<Photo> searchTags(String tagvalue){
+    //Search All
+    public ArrayList<Photo> searchAllTags(String tagvalue){
         ArrayList<Photo> photolist = new ArrayList<Photo>();
         //Used to make sure no duplicates
         HashSet<Photo> check = new HashSet<Photo>();
@@ -68,6 +68,28 @@ public class User implements Serializable {
                     System.out.println(tagvalue);
                     System.out.println(tag.value.toLowerCase().contains(tagvalue.toLowerCase()));
                     if(tag.value.toLowerCase().contains(tagvalue.toLowerCase())){
+                        check.add(photo);
+                    }
+                }
+            }
+
+        }
+
+        photolist.addAll(check);
+        return photolist;
+    }
+
+    public ArrayList<Photo> searchCertainTags(String tagkey, String tagvalue){
+        ArrayList<Photo> photolist = new ArrayList<Photo>();
+        //Used to make sure no duplicates
+        HashSet<Photo> check = new HashSet<Photo>();
+        for(Album album : albums) {
+            for(Photo photo : album.getPhotos()) {
+                for (Tag tag : photo.getTaglist()){
+
+                    System.out.println(tagvalue);
+                    System.out.println(tag.value.toLowerCase().contains(tagvalue.toLowerCase()));
+                    if(tag.value.toLowerCase().contains(tagvalue.toLowerCase()) && tag.key.toLowerCase().contains(tagkey.toLowerCase())){
                         check.add(photo);
                     }
                 }
