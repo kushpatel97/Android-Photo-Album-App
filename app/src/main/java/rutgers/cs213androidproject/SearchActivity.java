@@ -1,5 +1,7 @@
 package rutgers.cs213androidproject;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -73,6 +75,19 @@ public class SearchActivity extends AppCompatActivity {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(editText == null || editText.getText().toString().isEmpty()){
+                    AlertDialog alertDialog = new AlertDialog.Builder(SearchActivity.this).create();
+                    alertDialog.setTitle("Incomplete Field");
+                    alertDialog.setMessage("Please enter a value to be searched");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                    return;
+                }
                 photoList.clear();
                 String tagkey = spinneroptions[option];
                 String tagvalue = editText.getText().toString();

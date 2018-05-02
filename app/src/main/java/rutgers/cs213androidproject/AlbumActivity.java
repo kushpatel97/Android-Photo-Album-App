@@ -171,6 +171,7 @@ public class AlbumActivity extends AppCompatActivity {
             }
             gridView = (GridView) findViewById(R.id.gridview_album);
             update();
+
             albumImageAdapter.notifyDataSetChanged();
             gridView.setAdapter(albumImageAdapter);
         }
