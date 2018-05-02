@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
         albumnames.clear();
         for(int i=0; i <session.getAlbums().size(); i++){
             String albumname = session.getAlbums().get(i).getAlbumName();
-            albumnames.add(albumname+ "\nNumber of photos: " + session.getAlbums().get(i).getNumberOfPhotos());
+            albumnames.add(albumname);
         }
 //        adapter.notifyDataSetChanged();
     }
