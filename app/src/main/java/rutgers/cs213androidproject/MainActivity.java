@@ -3,6 +3,7 @@ package rutgers.cs213androidproject;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 session.setCurrentAlbum(currentAlbum);
                 Intent goToCurrentAlbum = new Intent(MainActivity.this, AlbumActivity.class);
                 startActivity(goToCurrentAlbum);
-                Toast.makeText(getApplicationContext(), adapterView.getItemAtPosition(i) + " Page", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), adapterView.getItemAtPosition(i) + " Page", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -191,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.search_icon) {
             Intent goToSearch = new Intent(MainActivity.this, SearchActivity.class);
             startActivity(goToSearch);
-            Toast.makeText(getApplicationContext(), "Onto Search", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "Onto Search", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -299,7 +301,8 @@ public class MainActivity extends AppCompatActivity {
     public void update(){
         albumnames.clear();
         for(int i=0; i <session.getAlbums().size(); i++){
-            albumnames.add(session.getAlbums().get(i).getAlbumName());
+            String albumname = session.getAlbums().get(i).getAlbumName();
+            albumnames.add(albumname+ "\nNumber of photos: " + session.getAlbums().get(i).getNumberOfPhotos());
         }
 //        adapter.notifyDataSetChanged();
     }

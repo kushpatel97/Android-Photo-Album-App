@@ -1,8 +1,10 @@
 package rutgers.cs213androidproject;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -196,9 +198,23 @@ public class AlbumActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.slideshow) {
-            Intent goToSlideshow = new Intent(AlbumActivity.this, SlideshowActivity.class);
-            startActivity(goToSlideshow);
-            Toast.makeText(getApplicationContext(), "Going to Slideshow", Toast.LENGTH_SHORT).show();
+            if(MainActivity.session.getCurrentAlbum().getPhotos().size() == 0){
+                AlertDialog alertDialog = new AlertDialog.Builder(AlbumActivity.this).create();
+                alertDialog.setTitle("Empty Album");
+                alertDialog.setMessage("Add a photo to an album to view a slideshow");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+            else {
+                Intent goToSlideshow = new Intent(AlbumActivity.this, SlideshowActivity.class);
+                startActivity(goToSlideshow);
+//                Toast.makeText(getApplicationContext(), "Going to Slideshow", Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
