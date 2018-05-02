@@ -7,47 +7,54 @@
     tools:context=".SearchActivity">
 
 
-    <model.CustomSpinner
-        android:id="@+id/tagspinner"
-        android:layout_width="76dp"
-        android:layout_height="48dp"
-        android:layout_margin="5dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></model.CustomSpinner>
-
-    <EditText
-        android:id="@+id/tagName"
-        android:inputType="text"
-        android:imeOptions="actionDone"
-        android:layout_width="209dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/search"
-        app:layout_constraintStart_toEndOf="@+id/tagspinner"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/searchTags"
-        android:layout_width="66dp"
-        android:layout_height="49dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:src="@drawable/ic_search_black_24px"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/tagName"
-        app:layout_constraintTop_toTopOf="parent" />
+        <model.CustomSpinner
+            android:id="@+id/tagspinner"
+            android:layout_width="76dp"
+            android:layout_height="50dp"></model.CustomSpinner>
+        <SearchView
+            android:id="@+id/searchField"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+        </SearchView>
+    </LinearLayout>
+
+
+    <!--<EditText-->
+        <!--android:id="@+id/tagName"-->
+        <!--android:inputType="text"-->
+        <!--android:imeOptions="actionDone"-->
+        <!--android:layout_width="209dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="5dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/search"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/tagspinner"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--<ImageButton-->
+        <!--android:id="@+id/searchTags"-->
+        <!--android:layout_width="66dp"-->
+        <!--android:layout_height="49dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="4dp"-->
+        <!--android:src="@drawable/ic_search_black_24px"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="1.0"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/tagName"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
 
 
     <GridView
